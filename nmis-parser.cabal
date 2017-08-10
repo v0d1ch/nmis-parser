@@ -14,9 +14,13 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
-  hs-source-dirs:      src/Text
-  exposed-modules:     Nmis
+  hs-source-dirs:      src
+  exposed-modules:     Text.Nmis
+                     , Text.Helper
+                     , Text.NmisTypes
   build-depends:       base >= 4.7 && < 5
+                     , containers
+                     , megaparsec
   default-language:    Haskell2010
 
 
