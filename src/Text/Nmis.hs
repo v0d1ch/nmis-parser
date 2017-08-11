@@ -1,98 +1,81 @@
+{-|
+Module      : Text.Nmis
+Description : Main module for nmis parsing
+Copyright   : (c) Sasa Bogicevic, 2017
+License     : GPL-3
+Maintainer  : brutallesale@gmail.com
+Stability   : experimental
+
+-}
+
+--   NMIS stands for Network Management Interface Standard
+--
+--   This parser parses the nmis format files to Nmis record type
+--
+--  Example usage :
+--
+--  module Main where
+--
+--  import System.Environment (getArgs)
+--
+--  import System.IO
+--
+--  import Text.Megaparsec
+--
+--  import Text.Nmis
+--
+--  main :: IO ()
+--
+--  main = do
+--
+--    args <- getArgs
+--
+--    case args of
+--
+--      [] -> putStrLn "error: you need to pass in file path"
+--
+--      [path] -> do
+--
+--              contents <- readFile path
+--
+--              let result = parse parseNmis "" contents
+--
+--              case result of
+--
+--                  Left nodes -> print $ parseErrorPretty nodes
+--
+--                  Right nodes -> do
+--
+--                      print nodes
+--
+--      _ -> putStrLn "error: you need to pass in only one file path"
+--
+
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Nmis (parseNmis) where
-
--- | NMIS stands for Network Management Interface Standard
---   This parser parses the nmis format files to Nmis record type
-
-
--- | Nmis file format looks something like this
--- -#
--- # THIS SOFTWARE IS NOT PART OF NMIS AND IS COPYRIGHTED, PROTECTED AND LICENSED
--- # ...
--- # *****************************************************************************
---
--- %hash = (
---   'some title' => {
---     'active' => 'true',
---     'authkey' => '',
---     'authpassword' => '',
---     'authprotocol' => 'md5',
---     'businessService' => '',
---     'calls' => 'false',
---     'cbqos' => 'none',
---     'collect' => 'true',
---     'community' => '',
---     'context' => '',
---     'customer' => '',
---     'depend' => 'N/A',
---     'display_name' => '',
---     'group' => '',
---     'host' => '00.000.00.000',
---     'location' => '',
---     'max_msg_size' => '',
---     'max_repetitions' => '',
---     'model' => 'automatic',
---     'name' => '',
---     'netType' => 'lan',
---     'notes' => '',
---     'ping' => 'true',
---     'port' => '',
---     'privkey' => '',
---     'privpassword' => '',
---     'privprotocol' => 'des',
---     'rancid' => 'false',
---     'remote_connection_name' => '',
---     'remote_connection_url' => '',
---     'roleType' => 'access',
---     'serviceStatus' => 'Production',
---     'services' => '',
---     'threshold' => 'true',
---     'timezone' => '0',
---     'username' => '',
---     'uuid' => '',
---     'version' => '',
---     'webserver' => 'false',
---     'wmipassword' => '',
---     'wmiusername' => ''
---   },
---   ...
--- );
-
-
--- | Example usage
--- module Main where
--- import System.Environment (getArgs)
--- import System.IO
--- import Text.Megaparsec
--- import Text.Nmis
-
--- -- | Example usage
--- main :: IO ()
--- main = do
---   args <- getArgs
---   case args of
---     [] -> putStrLn "error: you need to pass in file path"
---     [path] -> do
---             contents <- readFile path
---             let result = parse parseNmis "" contents
---             case result of
---                 Left nodes -> print $ parseErrorPretty nodes
---                 Right nodes -> do
---                     print nodes
-
---     _ -> putStrLn "error: you need to pass in only one file path"
+module Text.Nmis where
 
 
 import Control.Monad (join)
 import qualified Data.Map.Strict as M
-import Text.Helper as H
 import Prelude hiding (until)
 import Text.Megaparsec
 import Text.Megaparsec.String
 import Text.Read (readMaybe)
-import Text.NmisTypes
 import Data.Maybe (fromMaybe)
+import Text.Internal.NmisTypes
+import Text.Internal.Helper as H
+
+-- |  Parse nmis file to [Nmis]
+--
+--    __This is a single function you will need to parse the file__
+parseNmis :: Parser [Nmis]
+parseNmis =
+  lexeme $ do
+    _ <- optional $ symbol "#"
+    _ <- phash
+    _ <- space >> string "("
+    parseToList
 
 
 -- | Parses single record
@@ -140,7 +123,16 @@ parseSingle = do
     }
 
 
--- | Pass Nmiss and single Node to find a match
+-- |
+-- This function is used to match records by group/groups field.
+--
+-- You have two lists with Nmis types [Nmis] [Nmis]
+--
+-- and you want to match group field from one to the groups field from the other,
+--
+-- grab a customer field from first list and attach it to the second list which you can save later.
+--
+-- This is something of practical use which I needed in the real world.
 lookupInList :: [Nmis] ->  Nmis -> Nmis
 lookupInList cust n = do
    let fcusts =  filterByGroup (group n) cust
@@ -152,15 +144,7 @@ lookupInList cust n = do
 filterByGroup :: Maybe String -> [Nmis]  -> [Nmis]
 filterByGroup s cl = filter (\c -> groups c == s) cl
 
--- | Parse nmis file to [Nmis]
-parseNmis :: Parser [Nmis]
-parseNmis =
-  lexeme $ do
-    _ <- optional $ symbol "#"
-    _ <- phash
-    _ <- space >> string "("
-    parseToList
-
+-- | parses many single values until ');'
 parseToList :: Parser [Nmis]
 parseToList = do
   result <-
@@ -176,7 +160,9 @@ showMaybeInt i = case i of
   Nothing -> ""
   Just x -> show x
 
--- | Show Nmis
+-- | Show Nmis list
+--
+-- Use for printing the [Nmis] list
 showNmis :: [Nmis] -> String
 showNmis [] =  ""
 showNmis (c:cx) =

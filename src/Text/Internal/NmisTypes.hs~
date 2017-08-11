@@ -1,6 +1,6 @@
-module Text.NmisTypes where
+module NmisTypes where
 
-
+-- | Main type that containes all parsed data
 data Nmis = Nmis
   { customer :: Maybe String
   , groups :: Maybe String
