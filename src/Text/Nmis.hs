@@ -8,7 +8,7 @@ Stability   : experimental
 
 -}
 
---   NMIS stands for Network Management Interface Standard
+--   NMIS stands for Network Management Information System
 --
 --   This parser parses the nmis format files to Nmis record type
 --
