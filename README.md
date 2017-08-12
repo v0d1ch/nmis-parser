@@ -28,4 +28,4 @@ This parser parses the NMIS format files to `Nmis` record type
 
 ```
 
-You can find this library on (hackage)[https://hackage.haskell.org/package/nmis-parser-0.1.0.0]
+You can find this library on [hackage](https://hackage.haskell.org/package/nmis-parser-0.1.0.0)
