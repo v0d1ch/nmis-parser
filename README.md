@@ -27,3 +27,5 @@ This parser parses the NMIS format files to `Nmis` record type
       _ -> putStrLn "error: you need to pass in only one file path"
 
 ```
+
+You can find this library on (hackage)[https://hackage.haskell.org/package/nmis-parser-0.1.0.0]
