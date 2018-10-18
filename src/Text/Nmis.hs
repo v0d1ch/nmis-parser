@@ -16,6 +16,9 @@ Stability   : experimental
 --
 --  module Main where
 --
+--
+--  import Data.Either
+--
 --  import System.Environment (getArgs)
 --
 --  import System.IO
@@ -34,21 +37,13 @@ Stability   : experimental
 --
 --      [] -> putStrLn "error: you need to pass in file path"
 --
---      [path] -> do
+--      (path:_) -> do
 --
---              contents <- readFile path
+--         contents <- readFile path
 --
---              let result = parse parseNmis "" contents
+--         let result = parse parseNmis "" contents
 --
---              case result of
---
---                  Left nodes -> print $ parseErrorPretty nodes
---
---                  Right nodes -> do
---
---                      print nodes
---
---      _ -> putStrLn "error: you need to pass in only one file path"
+--         either (print . parseErrorPretty) print (parse parseNmis "" contents)
 --
 
 {-# LANGUAGE OverloadedStrings #-}

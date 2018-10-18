@@ -1,4 +1,4 @@
-# NMIS file parser 
+# NMIS file parser
  - NMIS stands for Network Management Information System
 
 This parser parses the NMIS format files to `Nmis` record type
@@ -7,6 +7,8 @@ This parser parses the NMIS format files to `Nmis` record type
 
 ```haskell
   module Main where
+
+  import Data.Either
   import System.Environment (getArgs)
   import System.IO
   import Text.Megaparsec
@@ -17,14 +19,9 @@ This parser parses the NMIS format files to `Nmis` record type
     args <- getArgs
     case args of
       [] -> putStrLn "error: you need to pass in file path"
-      [path] -> do
-              contents <- readFile path
-              let result = parse parseNmis "" contents
-              case result of
-                  Left nodes -> print $ parseErrorPretty nodes
-                  Right nodes -> do
-                      print nodes
-      _ -> putStrLn "error: you need to pass in only one file path"
+      (path:_) -> do
+         contents <- readFile path
+         either (print . parseErrorPretty) print (parse parseNmis "" contents)
 
 ```
 
