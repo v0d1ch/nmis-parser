@@ -14,14 +14,13 @@ This parser parses the NMIS format files to `Nmis` record type
   import Text.Megaparsec
   import Text.Nmis
 
-  main :: IO ()
-  main = do
-    args <- getArgs
-    case args of
-      [] -> putStrLn "error: you need to pass in file path"
-      (path:_) -> do
-         contents <- readFile path
-         either (print . parseErrorPretty) print (parse parseNmis "" contents)
+main :: IO ()
+main = getArgs >>= parseArgs
+  where
+    parseArgs [] = putStrLn "error: you need to pass in the file path"
+    parseArgs (path:_) = do
+      contents <- readFile path
+      either (print . parseErrorPretty) print (parse parseNmis "" contents)
 
 ```
 
