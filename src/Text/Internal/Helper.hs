@@ -1,11 +1,11 @@
 {-|
 Module      : Text.Internal.Helper
-Description : Helper for parse actions 
+Description : Helper for parse actions
 Copyright   : (c) Sasa Bogicevic, 2017
 License     : GPL-3
-Maintainer  : brutallesale@gmail.com
+Maintainer  : t4nt0r@pm.me
 Stability   : experimental
-Uses megaparsec library 
+Uses megaparsec library
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

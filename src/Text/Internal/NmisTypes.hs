@@ -1,9 +1,9 @@
 {-|
 Module      : Text.Internal.NmisTypes
-Description : Contains single type that holds all parsed data  
+Description : Contains single type that holds all parsed data
 Copyright   : (c) Sasa Bogicevic, 2017
 License     : GPL-3
-Maintainer  : brutallesale@gmail.com
+Maintainer  : t4nt0r@pm.me
 Stability   : experimental
 -}
 module Text.Internal.NmisTypes where

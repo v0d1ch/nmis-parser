@@ -3,7 +3,7 @@ Module      : Text.Nmis
 Description : Main module for nmis parsing
 Copyright   : (c) Sasa Bogicevic, 2017
 License     : GPL-3
-Maintainer  : brutallesale@gmail.com
+Maintainer  : t4nt0r@pm.me
 Stability   : experimental
 
 -}
@@ -29,21 +29,18 @@ Stability   : experimental
 --
 --  main :: IO ()
 --
---  main = do
+--  main = getArgs >>= parseArgs
 --
---    args <- getArgs
+--    where
 --
---    case args of
+--      parseArgs [] = putStrLn "error: you need to pass in the file path"
 --
---      [] -> putStrLn "error: you need to pass in file path"
+--      parseArgs (path:_) = do
 --
---      (path:_) -> do
+--        contents <- readFile path
 --
---         contents <- readFile path
+--        either (print . parseErrorPretty) print (parse parseNmis "" contents)
 --
---         let result = parse parseNmis "" contents
---
---         either (print . parseErrorPretty) print (parse parseNmis "" contents)
 --
 
 {-# LANGUAGE OverloadedStrings #-}
