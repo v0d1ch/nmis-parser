@@ -1,12 +1,12 @@
 name:                nmis-parser
-version:             0.1.0.1
+version:             0.2.0.0
 synopsis:            NMIS file parser
 homepage:            https://github.com/v0d1ch/nmis-parser#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Sasa Bogicevic
-maintainer:          brutallesale@gmail.com
-copyright:           2017 Sasa Bogicevic
+maintainer:          t4nt0r@pm.me
+copyright:           2019 Sasa Bogicevic
 category:            Text, Parsers
 build-type:          Simple
 extra-source-files:  README.md
@@ -20,20 +20,23 @@ library
   exposed-modules:     Text.Nmis
                      , Text.Internal.Helper
                      , Text.Internal.NmisTypes
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       universum
                      , containers
-                     , megaparsec < 5.3.2
+                     , megaparsec
   default-language:    Haskell2010
+  default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards LambdaCase MultiWayIf
+  ghc-options:         -Werror -fwarn-redundant-constraints -fwarn-unused-matches -fwarn-unused-imports -threaded -rtsopts -with-rtsopts=-N
 
 
 test-suite nmis-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  build-depends:       base
+  build-depends:       universum
                      , Nmis
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:         -Werror -fwarn-redundant-constraints -fwarn-unused-matches -fwarn-unused-imports -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
+  default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards LambdaCase MultiWayIf
 
 source-repository head
   type:     git

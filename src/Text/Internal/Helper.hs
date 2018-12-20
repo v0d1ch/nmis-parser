@@ -1,7 +1,7 @@
 {-|
 Module      : Text.Internal.Helper
 Description : Helper for parse actions
-Copyright   : (c) Sasa Bogicevic, 2017
+Copyright   : (c) Sasa Bogicevic, 2019
 License     : GPL-3
 Maintainer  : t4nt0r@pm.me
 Stability   : experimental
@@ -14,10 +14,10 @@ module Text.Internal.Helper where
 
 import Control.Applicative (empty)
 import Control.Monad (void)
-import Prelude hiding (until)
 import Text.Megaparsec
 import qualified Text.Megaparsec.Lexer as L
 import Text.Megaparsec.String
+import Universum
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()

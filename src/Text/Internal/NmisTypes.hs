@@ -1,12 +1,14 @@
 {-|
 Module      : Text.Internal.NmisTypes
 Description : Contains single type that holds all parsed data
-Copyright   : (c) Sasa Bogicevic, 2017
+Copyright   : (c) Sasa Bogicevic, 2019
 License     : GPL-3
 Maintainer  : t4nt0r@pm.me
 Stability   : experimental
 -}
 module Text.Internal.NmisTypes where
+
+import Universum
 
 -- | Main type that holds all parsed data
 data Nmis = Nmis
@@ -42,3 +44,47 @@ data Nmis = Nmis
   , version :: Maybe String
   , webserver :: Maybe String
   } deriving (Show)
+
+-- all fields
+-- 'CA-Core-1' => {
+--     'active' => 'true',
+--     'authkey' => '',
+--     'authpassword' => '',
+--     'authprotocol' => 'md5',
+--     'businessService' => '',
+--     'calls' => 'false',
+--     'cbqos' => 'none',
+--     'collect' => 'true',
+--     'community' => 'public',
+--     'context' => '',
+--     'customer' => '',
+--     'depend' => '',
+--     'display_name' => '',
+--     'group' => 'WIRELESS',
+--     'host' => '10.12.255.140',
+--     'location' => '2CX',
+--     'max_msg_size' => '2800',
+--     'max_repetitions' => '0',
+--     'model' => 'automatic',
+--     'name' => 'CA-Core-1',
+--     'netType' => 'wan',
+--     'notes' => 'Test Note ND080217',
+--     'ping' => 'true',
+--     'port' => '161',
+--     'privkey' => '',
+--     'privpassword' => '',
+--     'privprotocol' => 'des',
+--     'remote_connection_name' => 'SSH to Node',
+--     'remote_connection_url' => 'ssh://$host',
+--     'roleType' => 'core',
+--     'serviceStatus' => 'Development',
+--     'services' => '',
+--     'threshold' => 'true',
+--     'timezone' => '0',
+--     'username' => '',
+--     'uuid' => '40a860d3-afcc-11e6-b9b8-ad57ed8ffe33',
+--     'version' => 'snmpv2c',
+--     'webserver' => 'false',
+--     'wmipassword' => '',
+--     'wmiusername' => ''
+--    }

@@ -1,7 +1,7 @@
 {-|
 Module      : Text.Nmis
 Description : Main module for nmis parsing
-Copyright   : (c) Sasa Bogicevic, 2017
+Copyright   : (c) Sasa Bogicevic, 2019
 License     : GPL-3
 Maintainer  : t4nt0r@pm.me
 Stability   : experimental
@@ -50,13 +50,13 @@ module Text.Nmis where
 
 import Control.Monad (join)
 import qualified Data.Map.Strict as M
-import Prelude hiding (until)
 import Text.Megaparsec
 import Text.Megaparsec.String
 import Text.Read (readMaybe)
 import Data.Maybe (fromMaybe)
 import Text.Internal.NmisTypes
 import Text.Internal.Helper as H
+import Universum
 
 -- |  Parse nmis file to [Nmis]
 --
