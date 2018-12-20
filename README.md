@@ -1,6 +1,6 @@
 # NMIS parser
  - NMIS stands for Network Management Information System
-   Read about it on [wikipedia](https://en.wikipedia.org/wiki/NMIS).
+ - Read about it on [wikipedia](https://en.wikipedia.org/wiki/NMIS).
 
 #### Example usage :
 
