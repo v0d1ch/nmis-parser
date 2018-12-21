@@ -8,7 +8,10 @@ Stability   : experimental
 -}
 module Text.Internal.NmisTypes where
 
+import Text.Megaparsec
 import Universum
+
+type Parser = Parsec Void String
 
 -- | Main type that holds all parsed data
 data Nmis = Nmis
@@ -46,7 +49,7 @@ data Nmis = Nmis
   } deriving (Show)
 
 -- all fields
--- 'CA-Core-1' => {
+-- Nmis {
 --     'active' => 'true',
 --     'authkey' => '',
 --     'authpassword' => '',

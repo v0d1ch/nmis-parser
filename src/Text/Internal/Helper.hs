@@ -1,3 +1,4 @@
+{-# LANGUAGE PartialTypeSignatures #-}
 {-|
 Module      : Text.Internal.Helper
 Description : Helper for parse actions
@@ -5,19 +6,19 @@ Copyright   : (c) Sasa Bogicevic, 2019
 License     : GPL-3
 Maintainer  : t4nt0r@pm.me
 Stability   : experimental
-Uses megaparsec library
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Internal.Helper where
 
-import Control.Applicative (empty)
-import Control.Monad (void)
+
 import Text.Megaparsec
-import qualified Text.Megaparsec.Lexer as L
-import Text.Megaparsec.String
-import Universum
+import Text.Megaparsec.Char
+import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Internal.NmisTypes (Parser)
+import Universum hiding (try, many)
+
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()
@@ -58,11 +59,11 @@ braces :: Parser a -> Parser a
 braces = between (string "{") (string "}")
 
 -- | parse until string passed as function parameter
-until :: String -> Parsec Dec String String
+until :: String -> Parser String
 until s = anyChar `manyTill` string s
 
 -- | parse until newline character
-untilEol :: Parsec Dec String String
+untilEol :: Parser String
 untilEol = anyChar `someTill` newline
 
 -- | parse until newline character
@@ -91,3 +92,4 @@ pOpt = do
   _ <- optional $ string' ","
   _ <- newline
   return (key, value)
+

@@ -20,6 +20,7 @@ library
   exposed-modules:     Text.Nmis
                      , Text.Internal.Helper
                      , Text.Internal.NmisTypes
+                     , Text.Internal.NmisInternal
   build-depends:       universum
                      , containers
                      , megaparsec
