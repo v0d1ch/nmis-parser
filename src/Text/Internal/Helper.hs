@@ -1,4 +1,5 @@
-{-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE GADTs              #-}
+
 {-|
 Module      : Text.Internal.Helper
 Description : Helper for parse actions
@@ -12,13 +13,11 @@ Stability   : experimental
 
 module Text.Internal.Helper where
 
-
+import Text.Internal.NmisTypes (Parser, ParseResult (..))
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Internal.NmisTypes (Parser)
-import Universum hiding (try, many)
-
+import Universum hiding (many, try)
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()
@@ -60,11 +59,11 @@ braces = between (string "{") (string "}")
 
 -- | parse until string passed as function parameter
 until :: String -> Parser String
-until s = anyChar `manyTill` string s
+until s = anySingle `manyTill` string s
 
 -- | parse until newline character
 untilEol :: Parser String
-untilEol = anyChar `someTill` newline
+untilEol = anySingle `someTill` newline
 
 -- | parse until newline character
 phash :: Parser String
@@ -76,20 +75,55 @@ pQuotedStr = do
   _ <- optional space
   string' "'" >> until "'"
 
+pQuotedVal :: Parser (String, ParseResult String)
+pQuotedVal = do
+  void $ space
+  key <- pQuotedStr
+  void $ space >> string "=>" >> space
+  void $ optional space
+  str <- string' "'" >> until "'"
+  return (key, RString str)
+
 -- | parse 'undef' literal
-pUndefined :: Parser String
+pUndefined :: Parser (String, ParseResult String)
 pUndefined = do
+  void $ space
+  key <- pQuotedStr
+  void $ space >> string "=>" >> space
   _ <- optional space
-  string' "undef"
+  undef <- string' "undef"
+  return (key, RString undef)
+
+-- | parse 'true' literal
+pTrue :: Parser (String, ParseResult Bool)
+pTrue = do
+  void $ space
+  key <- pQuotedStr
+  void $ space >> string "=>" >> space
+  void $ optional space
+  _ <- string' "true"
+  return (key, RBool True)
+
+-- | parse 'false' literal
+pFalse :: Parser (String, ParseResult Bool)
+pFalse = do
+  void $ space
+  key <- pQuotedStr
+  void $ space >> string "=>" >> space
+  void $ optional space
+  _ <- string' "false"
+  return (key, RBool False)
+
+-- pInt :: Parser (Result a)
+-- pInt = do
+--   int <- many numberChar
+--   return $ RInt int
 
 -- | combined parser for single record
-pOpt :: Parser (String, String)
-pOpt = do
-  _ <- space
-  key <- pQuotedStr
-  _ <- space >> string "=>" >> space
-  value <- try (pQuotedStr <|> pUndefined <|> many numberChar)
-  _ <- optional $ string' ","
-  _ <- newline
-  return (key, value)
-
+-- pOpt :: Parser (String, ParseResult a)
+-- pOpt = do
+--   void $ space
+--   key <- pQuotedStr
+--   void $ space >> string "=>" >> space
+--   value <- pTrue <|> pFalse <|> pUndefined
+--   return (key, value)

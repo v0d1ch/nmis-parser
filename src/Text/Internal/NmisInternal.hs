@@ -21,54 +21,66 @@ import Universum hiding (try)
 parseNmis :: Parser [Nmis]
 parseNmis =
   lexeme $ do
-    _ <- optional $ symbol "#"
-    _ <- phash
-    _ <- space >> string "("
+    void $ optional $ symbol "#"
+    void $ phash
+    void $ space >> string "("
     parseToList
 
 
 -- | Parses single record
 parseSingle :: Parser Nmis
 parseSingle = do
-  _ <- optional H.pQuotedStr
-  _ <- until "=>" >> space >> string "{" >> newline
-  node <- manyTill pOpt (try $ lookAhead $ optional space *> string "}")
-  _ <- optional space >> string "}"
-  _ <- optional $ string ","
+  void $ optional H.pQuotedStr
+  void $ until "=>" >> space >> string "{" >> newline
+  -- node <- manyTill pOpt (try $ lookAhead $ optional space *> string "}")
+  node <- sepBy1 (try $ pUndefined <|> pQuotedVal <|> pTrue <|> pFalse) (symbol ",")
+  -- _ <- liftIO $ print node
+  -- let node = undefined
+  void $ optional space >> string "}"
+  void $ optional $ string ","
   let rmap = M.fromList node
   return
     Nmis
-    { customer = M.lookup "customer" rmap
-    , groups = M.lookup "groups" rmap
-    , active = M.lookup "active" rmap
-    , businessService = M.lookup "businessService" rmap
-    , advancedOptions = M.lookup "advancedOptions" rmap
-    , authKey = M.lookup "authKey" rmap
-    , authPassword = M.lookup "authPassword" rmap
-    , authProtocol = M.lookup "authProtocol" rmap
-    , calls = M.lookup "calls" rmap
-    , cbqos = M.lookup "cbqos" rmap
-    , collect = M.lookup "collect" rmap
-    , community = M.lookup "community" rmap
-    , depend = M.lookup "depend" rmap
-    , display_name = M.lookup "display_name" rmap
-    , group = M.lookup "group" rmap
-    , host = M.lookup "host" rmap
-    , location = M.lookup "location" rmap
-    , model = M.lookup "model" rmap
-    , name = M.lookup "name" rmap
-    , netType = M.lookup "netType" rmap
-    , ping = M.lookup "ping" rmap
-    , port = M.lookup "port" rmap
-    , rancid = M.lookup "rancid" rmap
-    , roleType = M.lookup "roleType" rmap
-    , serviceStatus = M.lookup "serviceStatus" rmap
-    , services = M.lookup "services" rmap
-    , threshold = M.lookup "threshold" rmap
-    , timezone = join $ readMaybe <$> M.lookup "timezone" rmap
-    , uuid = M.lookup "uuid" rmap
-    , version = M.lookup "version" rmap
-    , webserver = M.lookup "webserver" rmap
+    { customer = unResult <$> M.lookup "customer" rmap
+    , active = unResult <$> M.lookup "active" rmap
+    , businessService = unResult <$> M.lookup "businessService" rmap
+    , calls = unResult <$> M.lookup "calls" rmap
+    , cbqos = unResult <$> M.lookup "cbqos" rmap
+    , collect = unResult <$> M.lookup "collect" rmap
+    , community = unResult <$> M.lookup "community" rmap
+    , depend = unResult <$> M.lookup "depend" rmap
+    , display_name = unResult <$> M.lookup "display_name" rmap
+    , group = unResult <$> M.lookup "group" rmap
+    , host = unResult <$> M.lookup "host" rmap
+    , location = unResult <$> M.lookup "location" rmap
+    , model = unResult <$> M.lookup "model" rmap
+    , name = unResult <$> M.lookup "name" rmap
+    , netType = unResult <$> M.lookup "netType" rmap
+    , ping = unResult <$> M.lookup "ping" rmap
+    , port = unResult <$> M.lookup "port" rmap
+    , roleType = unResult <$> M.lookup "roleType" rmap
+    , serviceStatus = unResult <$> M.lookup "serviceStatus" rmap
+    , services = unResult <$> M.lookup "services" rmap
+    , threshold = unResult <$> M.lookup "threshold" rmap
+    , timezone = join $ readMaybe <$> unResult <$> M.lookup "timezone" rmap
+    , uuid = unResult <$> M.lookup "uuid" rmap
+    , version = unResult <$> M.lookup "version" rmap
+    , webserver = unResult <$> M.lookup "webserver" rmap
+    , authkey = unResult <$> M.lookup "authkey" rmap
+    , authpassword = unResult <$> M.lookup "authpassword" rmap
+    , authprotocol = unResult <$> M.lookup "authprotocol" rmap
+    , context = unResult <$> M.lookup "authprotocol" rmap
+    , max_msg_size = unResult <$> M.lookup "max_msg_size" rmap
+    , max_repetitions = unResult <$> M.lookup "max_repetitions" rmap
+    , notes = unResult <$> M.lookup "notes" rmap
+    , privkey = unResult <$> M.lookup "privkey" rmap
+    , privpassword = unResult <$> M.lookup "privpassword" rmap
+    , privprotocol = unResult <$> M.lookup "privprotocol" rmap
+    , remote_connection_name = unResult <$> M.lookup "remote_connection_name" rmap
+    , remote_connection_url = unResult <$> M.lookup "remote_connection_url" rmap
+    , username = unResult <$> M.lookup "username" rmap
+    , wmipassword = unResult <$> M.lookup "wmipassword" rmap
+    , wmiusername = unResult <$> M.lookup "wmiusername" rmap
     }
 
 
@@ -90,17 +102,17 @@ parseSingle = do
 --    else n
 
 -- | Filters Nmis by Nodes group
-filterByGroup :: Maybe String -> [Nmis]  -> [Nmis]
-filterByGroup s cl = filter (\c -> groups c == s) cl
+-- filterByGroup :: Maybe String -> [Nmis]  -> [Nmis]
+-- filterByGroup s cl = filter (\c -> groups c == s) cl
 
 -- | parses many single values until ');'
 parseToList :: Parser [Nmis]
 parseToList = do
   result <-
     manyTill parseSingle (try $ lookAhead $ optional space >> string ")")
-  _ <- optional newline
-  _ <- string ")"
-  _ <- optional $ string ";"
+  void $ optional newline
+  void $ string ")"
+  void $ optional $ string ";"
   return result
 
 -- | Show maybe integer for timezone field

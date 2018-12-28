@@ -1,3 +1,9 @@
+{-# LANGUAGE DeriveAnyClass     #-}
+{-# LANGUAGE DeriveFunctor      #-}
+{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE RankNTypes         #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
 {-|
 Module      : Text.Internal.NmisTypes
 Description : Contains single type that holds all parsed data
@@ -13,40 +19,15 @@ import Universum
 
 type Parser = Parsec Void String
 
--- | Main type that holds all parsed data
--- data Nmis = Nmis
---   { customer :: Maybe String
---   , groups :: Maybe String
---   , active :: Maybe String
---   , advancedOptions :: Maybe String
---   , authKey :: Maybe String
---   , authPassword :: Maybe String
---   , authProtocol :: Maybe String
---   , businessService :: Maybe String
---   , calls :: Maybe String
---   , cbqos :: Maybe String
---   , collect :: Maybe String
---   , community :: Maybe String
---   , depend :: Maybe String
---   , display_name :: Maybe String
---   , group :: Maybe String
---   , host :: Maybe String
---   , location :: Maybe String
---   , model :: Maybe String
---   , name :: Maybe String
---   , netType :: Maybe String
---   , ping :: Maybe String
---   , port :: Maybe String
---   , rancid :: Maybe String
---   , roleType :: Maybe String
---   , serviceStatus :: Maybe String
---   , services :: Maybe String
---   , threshold :: Maybe String
---   , timezone :: Maybe Integer
---   , uuid :: Maybe String
---   , version :: Maybe String
---   , webserver :: Maybe String
---   } deriving (Show)
+data ParseResult a where
+  RBool :: Bool -> ParseResult Bool
+  RString :: String -> ParseResult String
+  RInt :: Int -> ParseResult Int
+
+unResult :: ParseResult a -> a
+unResult (RBool a)   = a
+unResult (RString a) = a
+unResult (RInt a)    = a
 
 data Nmis = Nmis
   { active :: Maybe Bool
@@ -90,3 +71,4 @@ data Nmis = Nmis
   , wmipassword :: Maybe String
   , wmiusername :: Maybe String
   } deriving Show
+
