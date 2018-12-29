@@ -15,19 +15,21 @@ Stability   : experimental
 module Text.Internal.NmisTypes where
 
 import Text.Megaparsec
+import Data.Typeable
 import Universum
 
 type Parser = Parsec Void String
 
-data ParseResult a where
-  RBool :: Bool -> ParseResult Bool
-  RString :: String -> ParseResult String
-  RInt :: Int -> ParseResult Int
+data ParseResult
+  = RBool Bool
+  | RString String
+  | RInt Int
+  deriving Show
 
-unResult :: ParseResult a -> a
-unResult (RBool a)   = a
-unResult (RString a) = a
-unResult (RInt a)    = a
+unResult :: Typeable a => ParseResult -> Maybe a
+unResult (RBool a)   = cast a
+unResult (RString a) = cast a
+unResult (RInt a)    = cast a
 
 data Nmis = Nmis
   { active :: Maybe Bool

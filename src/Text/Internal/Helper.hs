@@ -25,6 +25,7 @@ spaceConsumer = L.space (void spaceChar) lineCmnt blockCmnt
   where
     lineCmnt = L.skipLineComment "#"
     blockCmnt = L.skipBlockComment "/*" "*/"
+
 -- | hashbang line comment
 lineComment :: Parser ()
 lineComment = L.skipLineComment "#"
@@ -69,13 +70,15 @@ untilEol = anySingle `someTill` newline
 phash :: Parser String
 phash = lexeme $ string' "%hash" >> pequals
 
+integer       = lexeme L.decimal
+
 -- | parse quoted string with optional space in front of it
 pQuotedStr :: Parser String
 pQuotedStr = do
   _ <- optional space
   string' "'" >> until "'"
 
-pQuotedVal :: Parser (String, ParseResult String)
+pQuotedVal :: Parser (String, ParseResult)
 pQuotedVal = do
   void $ space
   key <- pQuotedStr
@@ -84,34 +87,44 @@ pQuotedVal = do
   str <- string' "'" >> until "'"
   return (key, RString str)
 
+-- | parse integer
+pInt :: Parser (String, ParseResult)
+pInt = do
+  void $ space
+  key <- pQuotedStr
+  void $ space >> string "=>" >> space
+  _ <- optional space
+  int <- integer
+  return (key, RInt int)
+
 -- | parse 'undef' literal
-pUndefined :: Parser (String, ParseResult String)
+pUndefined :: Parser (String, ParseResult)
 pUndefined = do
   void $ space
   key <- pQuotedStr
   void $ space >> string "=>" >> space
   _ <- optional space
-  undef <- string' "undef"
+  undef <- symbol "undef"
   return (key, RString undef)
 
 -- | parse 'true' literal
-pTrue :: Parser (String, ParseResult Bool)
+pTrue :: Parser (String, ParseResult)
 pTrue = do
   void $ space
   key <- pQuotedStr
   void $ space >> string "=>" >> space
   void $ optional space
-  _ <- string' "true"
+  _ <- symbol "true"
   return (key, RBool True)
 
 -- | parse 'false' literal
-pFalse :: Parser (String, ParseResult Bool)
+pFalse :: Parser (String, ParseResult)
 pFalse = do
   void $ space
   key <- pQuotedStr
   void $ space >> string "=>" >> space
   void $ optional space
-  _ <- string' "false"
+  _ <- symbol "false"
   return (key, RBool False)
 
 -- pInt :: Parser (Result a)
@@ -120,7 +133,7 @@ pFalse = do
 --   return $ RInt int
 
 -- | combined parser for single record
--- pOpt :: Parser (String, ParseResult a)
+-- pOpt :: Parser (String, ParseResult)
 -- pOpt = do
 --   void $ space
 --   key <- pQuotedStr

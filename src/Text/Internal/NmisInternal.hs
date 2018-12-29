@@ -34,53 +34,51 @@ parseSingle = do
   void $ until "=>" >> space >> string "{" >> newline
   -- node <- manyTill pOpt (try $ lookAhead $ optional space *> string "}")
   node <- sepBy1 (try $ pUndefined <|> pQuotedVal <|> pTrue <|> pFalse) (symbol ",")
-  -- _ <- liftIO $ print node
-  -- let node = undefined
   void $ optional space >> string "}"
   void $ optional $ string ","
   let rmap = M.fromList node
   return
     Nmis
-    { customer = unResult <$> M.lookup "customer" rmap
-    , active = unResult <$> M.lookup "active" rmap
-    , businessService = unResult <$> M.lookup "businessService" rmap
-    , calls = unResult <$> M.lookup "calls" rmap
-    , cbqos = unResult <$> M.lookup "cbqos" rmap
-    , collect = unResult <$> M.lookup "collect" rmap
-    , community = unResult <$> M.lookup "community" rmap
-    , depend = unResult <$> M.lookup "depend" rmap
-    , display_name = unResult <$> M.lookup "display_name" rmap
-    , group = unResult <$> M.lookup "group" rmap
-    , host = unResult <$> M.lookup "host" rmap
-    , location = unResult <$> M.lookup "location" rmap
-    , model = unResult <$> M.lookup "model" rmap
-    , name = unResult <$> M.lookup "name" rmap
-    , netType = unResult <$> M.lookup "netType" rmap
-    , ping = unResult <$> M.lookup "ping" rmap
-    , port = unResult <$> M.lookup "port" rmap
-    , roleType = unResult <$> M.lookup "roleType" rmap
-    , serviceStatus = unResult <$> M.lookup "serviceStatus" rmap
-    , services = unResult <$> M.lookup "services" rmap
-    , threshold = unResult <$> M.lookup "threshold" rmap
-    , timezone = join $ readMaybe <$> unResult <$> M.lookup "timezone" rmap
-    , uuid = unResult <$> M.lookup "uuid" rmap
-    , version = unResult <$> M.lookup "version" rmap
-    , webserver = unResult <$> M.lookup "webserver" rmap
-    , authkey = unResult <$> M.lookup "authkey" rmap
-    , authpassword = unResult <$> M.lookup "authpassword" rmap
-    , authprotocol = unResult <$> M.lookup "authprotocol" rmap
-    , context = unResult <$> M.lookup "authprotocol" rmap
-    , max_msg_size = unResult <$> M.lookup "max_msg_size" rmap
-    , max_repetitions = unResult <$> M.lookup "max_repetitions" rmap
-    , notes = unResult <$> M.lookup "notes" rmap
-    , privkey = unResult <$> M.lookup "privkey" rmap
-    , privpassword = unResult <$> M.lookup "privpassword" rmap
-    , privprotocol = unResult <$> M.lookup "privprotocol" rmap
-    , remote_connection_name = unResult <$> M.lookup "remote_connection_name" rmap
-    , remote_connection_url = unResult <$> M.lookup "remote_connection_url" rmap
-    , username = unResult <$> M.lookup "username" rmap
-    , wmipassword = unResult <$> M.lookup "wmipassword" rmap
-    , wmiusername = unResult <$> M.lookup "wmiusername" rmap
+    { customer = join $ unResult <$> M.lookup "customer" rmap
+    , active = join $ unResult <$> M.lookup "active" rmap
+    , businessService = join $ unResult <$> M.lookup "businessService" rmap
+    , calls = join $ unResult <$> M.lookup "calls" rmap
+    , cbqos = join $ unResult <$> M.lookup "cbqos" rmap
+    , collect = join $ unResult <$> M.lookup "collect" rmap
+    , community = join $ unResult <$> M.lookup "community" rmap
+    , depend = join $ unResult <$> M.lookup "depend" rmap
+    , display_name = join $ unResult <$> M.lookup "display_name" rmap
+    , group = join $ unResult <$> M.lookup "group" rmap
+    , host = join $ unResult <$> M.lookup "host" rmap
+    , location = join $ unResult <$> M.lookup "location" rmap
+    , model = join $ unResult <$> M.lookup "model" rmap
+    , name = join $ unResult <$> M.lookup "name" rmap
+    , netType = join $ unResult <$> M.lookup "netType" rmap
+    , ping = join $ unResult <$> M.lookup "ping" rmap
+    , port = join $ unResult <$> M.lookup "port" rmap
+    , roleType = join $ unResult <$> M.lookup "roleType" rmap
+    , serviceStatus = join $ unResult <$> M.lookup "serviceStatus" rmap
+    , services = join $ unResult <$> M.lookup "services" rmap
+    , threshold = join $ unResult <$> M.lookup "threshold" rmap
+    , timezone = join $ unResult <$> M.lookup "timezone" rmap
+    , uuid = join $ unResult <$> M.lookup "uuid" rmap
+    , version = join $ unResult <$> M.lookup "version" rmap
+    , webserver = join $ unResult <$> M.lookup "webserver" rmap
+    , authkey = join $ unResult <$> M.lookup "authkey" rmap
+    , authpassword = join $ unResult <$> M.lookup "authpassword" rmap
+    , authprotocol = join $ unResult <$> M.lookup "authprotocol" rmap
+    , context = join $ unResult <$> M.lookup "authprotocol" rmap
+    , max_msg_size = join $ unResult <$> M.lookup "max_msg_size" rmap
+    , max_repetitions = join $ unResult <$> M.lookup "max_repetitions" rmap
+    , notes = join $ unResult <$> M.lookup "notes" rmap
+    , privkey = join $ unResult <$> M.lookup "privkey" rmap
+    , privpassword = join $ unResult <$> M.lookup "privpassword" rmap
+    , privprotocol = join $ unResult <$> M.lookup "privprotocol" rmap
+    , remote_connection_name = join $ unResult <$> M.lookup "remote_connection_name" rmap
+    , remote_connection_url = join $ unResult <$> M.lookup "remote_connection_url" rmap
+    , username = join $ unResult <$> M.lookup "username" rmap
+    , wmipassword = join $ unResult <$> M.lookup "wmipassword" rmap
+    , wmiusername = join $ unResult <$> M.lookup "wmiusername" rmap
     }
 
 

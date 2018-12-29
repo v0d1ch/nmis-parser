@@ -24,6 +24,7 @@ library
   build-depends:       universum
                      , containers
                      , megaparsec
+                     , base
   default-language:    Haskell2010
   default-extensions: NoImplicitPrelude OverloadedStrings RecordWildCards LambdaCase MultiWayIf
   ghc-options:         -Werror -fwarn-redundant-constraints -fwarn-unused-matches -fwarn-unused-imports -threaded -rtsopts -with-rtsopts=-N
