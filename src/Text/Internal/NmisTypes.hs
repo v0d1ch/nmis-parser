@@ -1,8 +1,3 @@
-{-# LANGUAGE DeriveAnyClass     #-}
-{-# LANGUAGE DeriveFunctor      #-}
-{-# LANGUAGE GADTs              #-}
-{-# LANGUAGE RankNTypes         #-}
-{-# LANGUAGE StandaloneDeriving #-}
 
 {-|
 Module      : Text.Internal.NmisTypes
@@ -15,62 +10,50 @@ Stability   : experimental
 module Text.Internal.NmisTypes where
 
 import Text.Megaparsec
-import Data.Typeable
 import Universum
 
 type Parser = Parsec Void String
 
-data ParseResult
-  = RBool Bool
-  | RString String
-  | RInt Int
-  deriving Show
-
-unResult :: Typeable a => ParseResult -> Maybe a
-unResult (RBool a)   = cast a
-unResult (RString a) = cast a
-unResult (RInt a)    = cast a
-
 data Nmis = Nmis
-  { active :: Maybe Bool
-  , authkey :: Maybe String
-  , authpassword :: Maybe String
-  , authprotocol :: Maybe String
-  , businessService :: Maybe String
-  , calls :: Maybe Bool
-  , cbqos :: Maybe String
-  , collect :: Maybe Bool
-  , community :: Maybe Bool
-  , context :: Maybe String
-  , customer :: Maybe String
-  , depend :: Maybe String
-  , display_name :: Maybe String
-  , group :: Maybe String
-  , host :: Maybe String
-  , location :: Maybe String
-  , max_msg_size :: Maybe Int
-  , max_repetitions :: Maybe Int
-  , model :: Maybe String
-  , name :: Maybe String
-  , netType :: Maybe String
-  , notes :: Maybe String
-  , ping :: Maybe Bool
-  , port :: Maybe Int
-  , privkey :: Maybe String
-  , privpassword :: Maybe String
-  , privprotocol :: Maybe String
-  , remote_connection_name :: Maybe String
-  , remote_connection_url :: Maybe String
-  , roleType :: Maybe String
-  , serviceStatus :: Maybe String
-  , services :: Maybe String
-  , threshold :: Maybe Bool
-  , timezone :: Maybe Int
-  , username :: Maybe String
-  , uuid :: Maybe String
-  , version :: Maybe String
-  , webserver :: Maybe Bool
-  , wmipassword :: Maybe String
-  , wmiusername :: Maybe String
+  { active :: Bool
+  , authkey :: String
+  , authpassword :: String
+  , authprotocol :: String
+  , businessService :: String
+  , calls :: Bool
+  , cbqos :: String
+  , collect :: Bool
+  , community :: Bool
+  , context :: String
+  , customer :: String
+  , depend :: String
+  , display_name :: String
+  , group :: String
+  , host :: String
+  , location :: String
+  , max_msg_size :: Int
+  , max_repetitions :: Int
+  , model :: String
+  , name :: String
+  , netType :: String
+  , notes :: String
+  , ping :: Bool
+  , port :: Int
+  , privkey :: String
+  , privpassword :: String
+  , privprotocol :: String
+  , remote_connection_name :: String
+  , remote_connection_url :: String
+  , roleType :: String
+  , serviceStatus :: String
+  , services :: String
+  , threshold :: Bool
+  , timezone :: Int
+  , username :: String
+  , uuid :: String
+  , version :: String
+  , webserver :: Bool
+  , wmipassword :: String
+  , wmiusername :: String
   } deriving Show
 
