@@ -15,7 +15,7 @@ import Text.Internal.NmisTypes (Parser)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Universum hiding (some)
+import Universum
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()
@@ -143,13 +143,13 @@ pFalse = do
 
 lineStart :: Parser ()
 lineStart = do
-  void space
+  void $ optional space
   _ <- pQuotedStr
-  void space
+  void $ optional space
   void $ string "=>"
   void $ optional space
 
 lineEnd :: Parser ()
 lineEnd = do
-  void $ symbol ","
+  void $ optional $ symbol ","
   void $ optional newline

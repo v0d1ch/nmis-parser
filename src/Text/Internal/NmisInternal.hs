@@ -1,5 +1,4 @@
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 {-|
 Module      : Text.Internal.NmisInternal
@@ -21,19 +20,19 @@ import Universum hiding (try, group)
 --
 --    __This is a single function you will need to parse the file__
 parseNmis :: Parser [Nmis]
-parseNmis =
-  lexeme $ do
-    void $ optional $ symbol "#"
-    void $ phash
-    void $ space >> string "("
-    parseToList
+parseNmis = do
+  void $ optional $ symbol "#"
+  void phash
+  void $ optional space >> string "(" >> optional newline
+  void $ lineStart >> string "{" >> newline
+  result <- manyTill parseSingle (char ')')
+  void $ optional (string ";") >> optional newline
+  return result
 
 -- | Parses single record
 parseSingle :: Parser Nmis
 parseSingle = do
-  void $ optional pQuotedStr
-  void $ until "=>" >> space >> string "{" >> newline
-  active <- try pTrue <|> pFalse <?> " active"
+  active <- try pTrue <|> pFalse <?> "active"
   authkey <- pQuotedVal <?> " auth key"
   authpassword <- pQuotedVal <?> " auth password"
   authprotocol <- pQuotedVal <?> " auth protocol"
@@ -73,22 +72,7 @@ parseSingle = do
   webserver <- try pTrue <|> pFalse <?> "webserver"
   wmipassword <- pQuotedVal <?> "wmipassword"
   wmiusername <- pQuotedVal <?> "wmiusername"
-  void $ optional space >> string "}"
+  void $ string "}" >> optional newline
   void $ optional $ string ","
   return Nmis {..}
 
--- | parses many single values until ');'
-parseToList :: Parser [Nmis]
-parseToList = do
-  result <-
-    manyTill parseSingle (try $ lookAhead $ optional space >> string ")")
-  void $ optional newline
-  void $ string ")"
-  void $ optional $ string ";"
-  return result
-
--- | Show maybe integer for timezone field
-showMaybeInt :: Maybe Integer -> String
-showMaybeInt i = case i of
-  Nothing -> ""
-  Just x -> show x
