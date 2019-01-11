@@ -11,11 +11,11 @@ Stability   : experimental
 -}
 module Text.Internal.NmisInternal where
 
-import Text.Internal.Helper as H
+import Text.Internal.ParseCombinators
 import Text.Internal.NmisTypes
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Universum hiding (try)
+import Universum hiding (try, group)
 
 -- |  Parse nmis file to [Nmis]
 --
@@ -31,7 +31,7 @@ parseNmis =
 -- | Parses single record
 parseSingle :: Parser Nmis
 parseSingle = do
-  void $ optional H.pQuotedStr
+  void $ optional pQuotedStr
   void $ until "=>" >> space >> string "{" >> newline
   active <- try pTrue <|> pFalse
   authkey <- pQuotedVal
@@ -41,7 +41,7 @@ parseSingle = do
   calls <- try pTrue <|> pFalse
   cbqos <- pQuotedVal
   collect <- try pTrue <|> pFalse
-  community <- try pTrue <|> pFalse
+  community <- pQuotedVal
   context <- pQuotedVal
   customer <- pQuotedVal
   depend <- pQuotedVal
@@ -49,8 +49,8 @@ parseSingle = do
   group <- pQuotedVal
   host <- pQuotedVal
   location <- pQuotedVal
-  max_msg_size <- pInt
-  max_repetitions <- pInt
+  max_msg_size <- pMInt
+  max_repetitions <- pMInt
   model <- pQuotedVal
   name <- pQuotedVal
   netType <- pQuotedVal
@@ -73,7 +73,7 @@ parseSingle = do
   webserver <- try pTrue <|> pFalse
   wmipassword <- pQuotedVal
   wmiusername <- pQuotedVal
-  optional space >> string "}"
+  void $ optional space >> string "}"
   void $ optional $ string ","
   return Nmis {..}
 

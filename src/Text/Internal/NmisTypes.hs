@@ -23,7 +23,7 @@ data Nmis = Nmis
   , calls :: Bool
   , cbqos :: String
   , collect :: Bool
-  , community :: Bool
+  , community :: String
   , context :: String
   , customer :: String
   , depend :: String
@@ -31,8 +31,8 @@ data Nmis = Nmis
   , group :: String
   , host :: String
   , location :: String
-  , max_msg_size :: Int
-  , max_repetitions :: Int
+  , max_msg_size :: Maybe Int
+  , max_repetitions :: Maybe Int
   , model :: String
   , name :: String
   , netType :: String

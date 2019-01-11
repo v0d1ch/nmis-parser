@@ -9,13 +9,13 @@ Stability   : experimental
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Internal.Helper where
+module Text.Internal.ParseCombinators where
 
 import Text.Internal.NmisTypes (Parser)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Universum hiding (many, try)
+import Universum
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()
@@ -73,28 +73,28 @@ integer = lexeme L.decimal
 
 -- | parse quoted string with optional space in front of it
 pQuotedStr :: Parser String
-pQuotedStr = do
-  void $ optional space
-  str <- string' "'" >> until "'"
-  void lineEnd
-  return str
+pQuotedStr = string' "'" >> until "'"
 
 pQuotedVal :: Parser String
 pQuotedVal = do
-  void pKey
-  void $ optional space
+  lineStart
   str <- string' "'" >> until "'"
   lineEnd
   return str
 
+-- | parse maybe integer
+pMInt :: Parser (Maybe Int)
+pMInt = do
+  lineStart
+  int <- optional integer
+  lineEnd
+  return int
+
 -- | parse integer
 pInt :: Parser Int
 pInt = do
-  void pKey
-  void $ optional space
-  void $ single '\''
+  lineStart
   int <- integer
-  void $ single '\''
   lineEnd
   return int
 
@@ -109,30 +109,36 @@ pUndefined = do
 -- | parse 'true' literal
 pTrue :: Parser Bool
 pTrue = do
-  void pKey
-  void $ optional space
-  void $ single '\''
+  lineStart
   _ <- string' "true"
-  void $ single '\''
   lineEnd
   return True
 
 -- | parse 'false' literal
 pFalse :: Parser Bool
 pFalse = do
-  void pKey
-  void $ optional space
-  void $ single '\''
+  lineStart
   _ <- string' "false"
-  void $ single '\''
-  void lineEnd
+  lineEnd
   return False
 
-lineEnd =
-   void $ symbol "," >> optional newline
-
+pKey :: Parser String
 pKey = do
-  void $ space
+  void space
   key <- pQuotedStr
-  void $ space >> string "=>" >> space
+  void space
+  void $ string "=>"
+  void space
   return key
+
+lineStart :: Parser ()
+lineStart = do
+  void pKey
+  void $ optional space
+  void $ symbol "'"
+
+lineEnd :: Parser ()
+lineEnd = do
+  void $ symbol "'"
+  void $ symbol ","
+  void $ optional newline
