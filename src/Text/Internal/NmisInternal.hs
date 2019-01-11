@@ -33,46 +33,46 @@ parseSingle :: Parser Nmis
 parseSingle = do
   void $ optional pQuotedStr
   void $ until "=>" >> space >> string "{" >> newline
-  active <- try pTrue <|> pFalse
-  authkey <- pQuotedVal
-  authpassword <- pQuotedVal
-  authprotocol <- pQuotedVal
-  businessService <- pQuotedVal
-  calls <- try pTrue <|> pFalse
-  cbqos <- pQuotedVal
-  collect <- try pTrue <|> pFalse
-  community <- pQuotedVal
-  context <- pQuotedVal
-  customer <- pQuotedVal
-  depend <- pQuotedVal
-  display_name <- pQuotedVal
-  group <- pQuotedVal
-  host <- pQuotedVal
-  location <- pQuotedVal
-  max_msg_size <- pMInt
-  max_repetitions <- pMInt
-  model <- pQuotedVal
-  name <- pQuotedVal
-  netType <- pQuotedVal
-  notes <- pQuotedVal
-  ping <- try pTrue <|> pFalse
-  port <- pInt
-  privkey <- pQuotedVal
-  privpassword <- pQuotedVal
-  privprotocol <- pQuotedVal
-  remote_connection_name <- pQuotedVal
-  remote_connection_url <- pQuotedVal
-  roleType <- pQuotedVal
-  serviceStatus <- pQuotedVal
-  services <- pQuotedVal
-  threshold <- try pTrue <|> pFalse
-  timezone <- pInt
-  username <- pQuotedVal
-  uuid <- pQuotedVal
-  version <- pQuotedVal
-  webserver <- try pTrue <|> pFalse
-  wmipassword <- pQuotedVal
-  wmiusername <- pQuotedVal
+  active <- try pTrue <|> pFalse <?> " active"
+  authkey <- pQuotedVal <?> " auth key"
+  authpassword <- pQuotedVal <?> " auth password"
+  authprotocol <- pQuotedVal <?> " auth protocol"
+  businessService <- pQuotedVal <?> " bussiness service"
+  calls <- try pTrue <|> pFalse <?> "calls"
+  cbqos <- pQuotedVal <?> "cbqos"
+  collect <- try pTrue <|> pFalse <?> "collect"
+  community <- pQuotedVal <?> "community"
+  context <- pQuotedVal <?> "context"
+  customer <- pQuotedVal <?> "customer"
+  depend <- pQuotedVal <?> "depend"
+  display_name <- pQuotedVal <?> "display name"
+  group <- pQuotedVal <?> "group"
+  host <- pQuotedVal <?> "host"
+  location <- pQuotedVal <?> "location"
+  max_msg_size <- pMInt <?> "max message size"
+  max_repetitions <- pMInt <?> "max repetitions"
+  model <- pQuotedVal <?> "model"
+  name <- pQuotedVal <?> "name"
+  netType <- pQuotedVal <?> "netType"
+  notes <- pQuotedVal <?> "notes"
+  ping <- try pTrue <|> pFalse <?> "ping"
+  port <- pInt <?> "port"
+  privkey <- pQuotedVal <?> "privKey"
+  privpassword <- pQuotedVal <?> "privpassword"
+  privprotocol <- pQuotedVal <?> "privprotocol"
+  remote_connection_name <- pQuotedVal <?> "remote connection name"
+  remote_connection_url <- pQuotedVal <?> "remote connection url"
+  roleType <- pQuotedVal <?> "role type"
+  serviceStatus <- pQuotedVal <?> "service status"
+  services <- pQuotedVal <?> "services"
+  threshold <- try pTrue <|> pFalse <?> "threshold"
+  timezone <- pInt <?> " timezone"
+  username <- pQuotedVal <?> "username"
+  uuid <- pQuotedVal <?> "uuid"
+  version <- pQuotedVal <?> "version"
+  webserver <- try pTrue <|> pFalse <?> "webserver"
+  wmipassword <- pQuotedVal <?> "wmipassword"
+  wmiusername <- pQuotedVal <?> "wmiusername"
   void $ optional space >> string "}"
   void $ optional $ string ","
   return Nmis {..}

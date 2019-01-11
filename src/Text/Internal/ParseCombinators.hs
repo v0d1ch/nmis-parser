@@ -15,8 +15,7 @@ import Text.Internal.NmisTypes (Parser)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Debug
-import Universum
+import Universum hiding (some)
 
 -- | space consumer - consume space and comments
 spaceConsumer :: Parser ()
@@ -76,7 +75,10 @@ charLiteral :: Parser Char
 charLiteral = between (char '\'') (char '\'') L.charLiteral
 
 stringLiteral :: Parser String
-stringLiteral = dbg "stringLiteral" $ symbol "'" *> manyTill L.charLiteral (symbol "'")
+stringLiteral = symbol "'" *> manyTill L.charLiteral (symbol "'")
+
+alphaNumLiteral :: Parser String
+alphaNumLiteral = symbol "'" *> manyTill alphaNumChar (symbol "'")
 
 -- | parse quoted string with optional space in front of it
 pQuotedStr :: Parser String
@@ -93,7 +95,9 @@ pQuotedVal = do
 pMInt :: Parser (Maybe Int)
 pMInt = do
   lineStart
+  void $ symbol "'"
   int <- optional integer
+  void $ symbol "'"
   lineEnd
   return int
 
@@ -101,17 +105,21 @@ pMInt = do
 pInt :: Parser Int
 pInt = do
   lineStart
+  void $ symbol "'"
   int <- integer
+  void $ symbol "'"
   lineEnd
   return int
 
 -- | parse 'undef' literal
-pUndefined :: Parser (String, String)
+pUndefined :: Parser String
 pUndefined = do
-  void $ optional space
-  key <- pKey
+  lineStart
+  void $ symbol "'"
   undef <- string' "undef"
-  return (key, undef)
+  void $ symbol "'"
+  lineEnd
+  return undef
 
 -- | parse 'true' literal
 pTrue :: Parser Bool
@@ -133,18 +141,12 @@ pFalse = do
   lineEnd
   return False
 
-pKey :: Parser String
-pKey = do
-  void space
-  key <- pQuotedStr
-  void space
-  void $ string "=>"
-  void space
-  return key
-
 lineStart :: Parser ()
 lineStart = do
-  void pKey
+  void space
+  _ <- pQuotedStr
+  void space
+  void $ string "=>"
   void $ optional space
 
 lineEnd :: Parser ()
