@@ -15,6 +15,7 @@ import Text.Internal.NmisTypes (Parser)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Debug
 import Universum
 
 -- | space consumer - consume space and comments
@@ -58,7 +59,7 @@ braces = between (string "{") (string "}")
 
 -- | parse until string passed as function parameter
 until :: String -> Parser String
-until s = anySingle `manyTill` string s
+until s = anySingle `manyTill` symbol s
 
 -- | parse until newline character
 untilEol :: Parser String
@@ -71,6 +72,12 @@ phash = lexeme $ string' "%hash" >> pequals
 integer :: Parser Int
 integer = lexeme L.decimal
 
+charLiteral :: Parser Char
+charLiteral = between (char '\'') (char '\'') L.charLiteral
+
+stringLiteral :: Parser String
+stringLiteral = dbg "stringLiteral" $ symbol "'" *> manyTill L.charLiteral (symbol "'")
+
 -- | parse quoted string with optional space in front of it
 pQuotedStr :: Parser String
 pQuotedStr = string' "'" >> until "'"
@@ -78,7 +85,7 @@ pQuotedStr = string' "'" >> until "'"
 pQuotedVal :: Parser String
 pQuotedVal = do
   lineStart
-  str <- string' "'" >> until "'"
+  str <- stringLiteral
   lineEnd
   return str
 
@@ -110,7 +117,9 @@ pUndefined = do
 pTrue :: Parser Bool
 pTrue = do
   lineStart
+  void $ symbol "'"
   _ <- string' "true"
+  void $ symbol "'"
   lineEnd
   return True
 
@@ -118,7 +127,9 @@ pTrue = do
 pFalse :: Parser Bool
 pFalse = do
   lineStart
+  void $ symbol "'"
   _ <- string' "false"
+  void $ symbol "'"
   lineEnd
   return False
 
@@ -135,10 +146,8 @@ lineStart :: Parser ()
 lineStart = do
   void pKey
   void $ optional space
-  void $ symbol "'"
 
 lineEnd :: Parser ()
 lineEnd = do
-  void $ symbol "'"
   void $ symbol ","
   void $ optional newline
