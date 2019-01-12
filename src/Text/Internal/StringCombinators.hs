@@ -9,7 +9,18 @@ Stability   : experimental
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Internal.ParseCombinators where
+module Text.Internal.StringCombinators
+  ( pQuotedVal
+  , pTrue
+  , pFalse
+  , pInt
+  , pMInt
+  , pUndefined
+  , pHash
+  , symbol
+  , lineStart
+  )
+  where
 
 import Text.Internal.NmisTypes (Parser)
 import Text.Megaparsec
@@ -40,45 +51,23 @@ lexeme = L.lexeme spaceConsumer
 symbol :: String -> Parser String
 symbol = L.symbol scn
 
--- | arrow - parse haskell constraint like arrow sign
-parrow :: Parser String
-parrow = lexeme $ string " => "
-
 -- | equals - parse equals sign
 pequals :: Parser String
 pequals = lexeme $ string " = "
-
--- | parse all between parens
-parens :: Parser a -> Parser a
-parens = between (string "(") (string ")")
-
--- | parse all between braces
-braces :: Parser a -> Parser a
-braces = between (string "{") (string "}")
 
 -- | parse until string passed as function parameter
 until :: String -> Parser String
 until s = anySingle `manyTill` symbol s
 
 -- | parse until newline character
-untilEol :: Parser String
-untilEol = anySingle `someTill` newline
-
--- | parse until newline character
-phash :: Parser String
-phash = lexeme $ string' "%hash" >> pequals
+pHash :: Parser String
+pHash = lexeme $ string' "%hash" >> pequals
 
 integer :: Parser Int
 integer = lexeme L.decimal
 
-charLiteral :: Parser Char
-charLiteral = between (char '\'') (char '\'') L.charLiteral
-
 stringLiteral :: Parser String
 stringLiteral = symbol "'" *> manyTill L.charLiteral (symbol "'")
-
-alphaNumLiteral :: Parser String
-alphaNumLiteral = symbol "'" *> manyTill alphaNumChar (symbol "'")
 
 -- | parse quoted string with optional space in front of it
 pQuotedStr :: Parser String

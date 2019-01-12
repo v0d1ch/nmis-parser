@@ -1,4 +1,4 @@
-
+{-# language TypeFamilies #-}
 {-|
 Module      : Text.Internal.NmisTypes
 Description : Contains single type that holds all parsed data

@@ -18,7 +18,7 @@ description:
 library
   hs-source-dirs:      src
   exposed-modules:     Text.Nmis
-                     , Text.Internal.ParseCombinators
+                     , Text.Internal.StringCombinators
                      , Text.Internal.NmisTypes
                      , Text.Internal.NmisInternal
   build-depends:       base

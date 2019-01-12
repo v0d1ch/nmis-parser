@@ -10,7 +10,7 @@ Stability   : experimental
 -}
 module Text.Internal.NmisInternal where
 
-import Text.Internal.ParseCombinators
+import Text.Internal.StringCombinators
 import Text.Internal.NmisTypes
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -22,7 +22,7 @@ import Universum hiding (try, group)
 parseNmis :: Parser [Nmis]
 parseNmis = do
   void $ optional $ symbol "#"
-  void phash
+  void pHash
   void $ optional space >> string "(" >> optional newline
   void $ lineStart >> string "{" >> newline
   result <- manyTill parseSingle (char ')')
