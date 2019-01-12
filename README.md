@@ -52,5 +52,7 @@
 | wmiusername                     |
 
 
+Currently only String api is provided.
+Plan is to support ByteString, Text as well as Streaming api.
 
 You can find this library on [hackage](https://hackage.haskell.org/package/nmis-parser-0.1.0.0)
