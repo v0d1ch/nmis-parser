@@ -42,6 +42,7 @@ data Nmis = Nmis
   , privkey :: !String
   , privpassword :: !String
   , privprotocol :: !String
+  , rancid :: !Bool
   , remote_connection_name :: !String
   , remote_connection_url :: !String
   , roleType :: !String

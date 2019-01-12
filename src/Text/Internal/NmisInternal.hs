@@ -59,6 +59,7 @@ parseSingle = do
   privkey <- pQuotedVal <?> "privKey"
   privpassword <- pQuotedVal <?> "privpassword"
   privprotocol <- pQuotedVal <?> "privprotocol"
+  rancid <- try pTrue <|> pFalse <?> "rancid"
   remote_connection_name <- pQuotedVal <?> "remote connection name"
   remote_connection_url <- pQuotedVal <?> "remote connection url"
   roleType <- pQuotedVal <?> "role type"
