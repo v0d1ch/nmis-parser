@@ -1,6 +1,6 @@
-{-# LANGUAGE GADTs        #-}
-{-# LANGUAGE RankNTypes   #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE GADTs                #-}
+{-# LANGUAGE RankNTypes           #-}
+{-# LANGUAGE TypeFamilies         #-}
 {-|
 Module      : Text.Internal.NmisTypes
 Description : Contains single type that holds all parsed data
@@ -13,21 +13,6 @@ module Text.Internal.NmisTypes where
 
 import Text.Megaparsec
 import Universum
-
-type family Reducer (a :: Type) :: Type  where
-  Reducer String = Nmis
-  Reducer Text = Nmis
-  Reducer ByteString = Nmis
-
-data Red (a :: Type) :: Type where
-  SRed :: String -> Red String
-  BsRed :: ByteString -> Red ByteString
-  TRed :: Text -> Red Text
-
-reduce :: Red a -> Reducer a
-reduce (SRed a) = undefined
-reduce (BsRed a) = undefined
-reduce (TRed a) = undefined
 
 type Parser = Parsec Void String
 

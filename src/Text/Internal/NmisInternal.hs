@@ -1,4 +1,6 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 {-|
 Module      : Text.Internal.NmisInternal
@@ -10,17 +12,35 @@ Stability   : experimental
 -}
 module Text.Internal.NmisInternal where
 
-import Text.Internal.StringCombinators
-import Text.Internal.NmisTypes
-import Text.Megaparsec
-import Text.Megaparsec.Char
-import Universum hiding (try, group)
+import qualified Data.Binary                     as B
+import           Data.ByteString.Lazy            hiding (group)
+import qualified Data.Text                       as T
+import           Text.Internal.NmisTypes
+import           Text.Internal.StringCombinators
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
+import           Universum                       hiding (ByteString, group, try)
+
+class HasNmis a where
+  parseToNmis :: a -> Either (ParseErrorBundle String Void) [Nmis]
+
+instance HasNmis String where
+  parseToNmis str = parse parseNmisList "" str
+
+instance HasNmis ByteString where
+  parseToNmis bs = parse parseNmisList "" $ B.decode bs
+
+instance HasNmis Text where
+  parseToNmis txt = parse parseNmisList "" $ T.unpack txt
+
+parseNmis :: HasNmis a => a -> Either (ParseErrorBundle String Void) [Nmis]
+parseNmis a = parseToNmis a
 
 -- |  Parse nmis file to [Nmis]
 --
 --    __This is a single function you will need to parse the file__
-parseNmis :: Parser [Nmis]
-parseNmis = do
+parseNmisList :: Parser [Nmis]
+parseNmisList = do
   void $ optional $ symbol "#"
   void pHash
   void $ optional space >> string "(" >> optional newline
